@@ -3,19 +3,22 @@ from selenium.webdriver.chrome.service  import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as BC
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 service = Service(executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
 
-driver.get("https://google.com")
+driver.get("https://www.youtube.com/")
 
-input_element = driver.find_element(By.CLASS_NAME, "gLFyf")
+WebDriverWait(driver, 5).until(
+    EC.presence_of_element_located((By.CLASS_NAME, "ytSearchboxComponentInput"))
+)
+
+input_element = driver.find_element(By.CLASS_NAME, "ytSearchboxComponentInput")
 input_element.clear()
-input_element.send_keys("youtube" + Keys.ENTER)
+input_element.send_keys("Tech with Tim" + Keys.ENTER)
 
-webDriverWait(driver, 5)
 
 time.sleep(10)
 
