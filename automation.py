@@ -19,7 +19,11 @@ input_element = driver.find_element(By.CLASS_NAME, "ytSearchboxComponentInput")
 input_element.clear()
 input_element.send_keys("Tech with Tim" + Keys.ENTER)
 
-
+WebDriverWait(driver, 5).until(
+    EC.element_to_be_clickable((By.XPATH, "//a[contains(@href,'@TechWithTim')]"))
+)
+Text = driver.find_element(By.XPATH, "//a[contains(@href,'@TechWithTim')]")
+Text.click()
 time.sleep(10)
 
 driver.quit()
