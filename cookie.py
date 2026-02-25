@@ -15,11 +15,11 @@ WebDriverWait(driver, 5).until(
 )
 English = driver.find_element(By.XPATH, "//*[contains(text(), 'English')]")
 English.click()
-while True:
-    WebDriverWait(driver, 5).until(
+WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.ID, "bigCookie"))
     )
-    cookie = driver.find_element(By.ID, "bigCookie")
+cookie = driver.find_element(By.ID, "bigCookie")
+while True:
     cookie.click()
     WebDriverWait(driver, 5).until(
     EC.presence_of_element_located((By.ID, 'cookies'))

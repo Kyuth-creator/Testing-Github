@@ -34,10 +34,8 @@ WebDriverWait(driver, 5).until(
 
 leaving = driver.find_element(By.CLASS_NAME, "module-input")
 leaving.clear()
-leaving.click(
-)
-leaving.send_keys("japan")
-leaving.send_keys(Keys.ENTER)
+leaving.send_keys("japan" + Keys.ENTER)
+
 
 
 
