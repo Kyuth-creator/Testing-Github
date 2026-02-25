@@ -1,0 +1,15 @@
+class trip:
+    def __init__(self):
+        self.Leave = input("where are you leaving from?: ")
+        self.Going = input("where are you going?: ")
+    
+    def Return(self):
+        Leave = self.Leave
+        Going = self.Going
+        return Leave, Going
+    
+Trip = trip()
+leave, going = Trip.Return
+print(leave)
+
+
