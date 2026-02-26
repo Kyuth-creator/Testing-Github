@@ -26,6 +26,7 @@ close_icon = driver.find_element(By.CLASS_NAME, "close-icon")
 time.sleep(1)
 close_icon.click()
 
+#searching for the "Leaving From" box
 wait.until(
     EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder,'Leaving')]"))
 )
@@ -34,13 +35,28 @@ leaving = driver.find_element(By.XPATH, "//input[contains(@placeholder,'Leaving'
 leaving.click()
 leaving.send_keys("Tokyo")
 
-
+#clicking the first option after input
 wait.until(
     EC.presence_of_element_located((By.CLASS_NAME, "poi-result__title"))
 )
 result = driver.find_element(By.CLASS_NAME, "poi-result__title")
 result.click()
 
+#searching for the "Going From" box
+wait.until(
+    EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder,'Going')]"))
+)
+
+leaving = driver.find_element(By.XPATH, "//input[contains(@placeholder,'Going')]")
+leaving.click()
+leaving.send_keys("seoul")
+
+#clicking the first option after input
+wait.until(
+    EC.presence_of_element_located((By.CLASS_NAME, "poi-result__title"))
+)
+result = driver.find_element(By.CLASS_NAME, "poi-result__title")
+result.click()
 
 time.sleep(10)
 driver.quit()
