@@ -8,40 +8,41 @@ import time
 
 service = Service(executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
-
+wait = WebDriverWait(driver, 10)
 driver.get("https://www.trip.com/")
 
-WebDriverWait(driver, 5).until(
+wait.until(
     EC.element_to_be_clickable((By.CLASS_NAME, "fi-flight"))
 )
 Flight = driver.find_element(By.CLASS_NAME, "fi-flight")
 Flight.click()
 # i should add an option of one way multiway or whatever. using [] or sth like asking 1 2 3 for the options not now tho
+
 # closing the notification
-WebDriverWait(driver, 5).until(
+wait.until(
     EC.presence_of_element_located((By.CLASS_NAME, "close-icon"))
 )
 close_icon = driver.find_element(By.CLASS_NAME, "close-icon")
 time.sleep(1)
 close_icon.click()
 
-WebDriverWait(driver, 5).until(
-    EC.presence_of_element_located((By.CLASS_NAME, "module-input"))
-)
-WebDriverWait(driver, 5).until(
-    EC.presence_of_element_located((By.CLASS_NAME, "fuzzy-input"))
+wait.until(
+    EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder,'Leaving')]"))
 )
 
-leaving = driver.find_element(By.CLASS_NAME, "module-input")
-leaving.clear()
-leaving.send_keys("japan" + Keys.ENTER)
+leaving = driver.find_element(By.XPATH, "//input[contains(@placeholder,'Leaving')]")
+leaving.click()
+leaving.send_keys("Tokyo")
 
 
-
+wait.until(
+    EC.presence_of_element_located((By.CLASS_NAME, "poi-result__title"))
+)
+result = driver.find_element(By.CLASS_NAME, "poi-result__title")
+result.click()
 
 
 time.sleep(10)
-
 driver.quit()
 
 
