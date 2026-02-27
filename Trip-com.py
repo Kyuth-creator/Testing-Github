@@ -4,10 +4,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-service = Service(executable_path="chromedriver.exe")
+#service = Service(executable_path="chromedriver.exe")
+#driver = webdriver.Chrome(service=service)
+
+#used chrome-manager cuz i keep losing chromedriver.exe
+service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service)
+
 wait = WebDriverWait(driver, 10)
 driver.get("https://www.trip.com/")
 
@@ -57,6 +63,63 @@ wait.until(
 )
 result = driver.find_element(By.CLASS_NAME, "poi-result__title")
 result.click()
+
+current_month = "january"
+current_date = "12"
+
+target_month = "march"
+
+#value system for months to be compared
+months = [
+    "January",    # 1
+    "February",   # 2
+    "March",      # 3
+    "April",      # 4
+    "May",        # 5
+    "June",       # 6
+    "July",       # 7
+    "August",     # 8
+    "September",  # 9
+    "October",    # 10
+    "November",   # 11
+    "December"    # 12
+]
+
+current_month_value = months.index(current_month.capitalize())
+target_month_value = months.index(target_month.capitalize())
+wait.until(
+    EC.element_to_be_clickable((By.CLASS_NAME, "verticalCenter-wrapper"))
+)
+calendar = driver.find_element(By.CLASS_NAME, "verticalCenter-wrapper")
+calendar.click()
+wait.until(
+    EC.presence_of_element_located((By.CLASS_NAME, "c-calendar-month__title"))
+)
+date = driver.find_element(By.CLASS_NAME, "c-calendar-month__title").text
+print(date)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 time.sleep(10)
 driver.quit()
