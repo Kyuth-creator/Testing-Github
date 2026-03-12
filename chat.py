@@ -11,9 +11,5 @@ driver = webdriver.Chrome(service=service)
 driver.get("https://gemini.google.com/app")
 
 
-
-
-
-
 time.sleep(10)
 driver.quit()

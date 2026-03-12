@@ -11,11 +11,14 @@ import time
 #driver = webdriver.Chrome(service=service)
 
 #user info ------------------------------------
-Departure = input("Where are you departing from?(city): ")
-Destination = input("Where are you going?(city): ")
-Target_month = input("Which months are you planning to leave?: ")
-Departure_date = input("When are you going?(date):") #if sth goes wrong delete these
-Arrival_date = input("When are you returning?(date):")
+Departure = input("Where are you departing from?(city): ").strip()
+Destination = input("Where are you going?(city): ").strip()
+Departure_month = input("Which months are you planning to leave?: ").strip()
+Departure_date = input("Which date is it?(--): ")
+Destination_month = input("Which months are you planning to return?: ").strip()
+Destination_date = input("Which date is it?(--): ")
+
+# ---------------- something that can be done better is checking the input(while loop and checking the date is 2 digit or checking the spelling etc)
 
 #used chrome-manager cuz i keep losing chromedriver.exe
 service = Service(ChromeDriverManager().install())
@@ -39,6 +42,91 @@ wait.until(
 close_icon = driver.find_element(By.CLASS_NAME, "close-icon")
 time.sleep(1)
 close_icon.click()
+
+#clicking the calendar
+wait.until(
+    EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder,'Any date')]"))
+)
+calendar = driver.find_element(By.XPATH, "//input[contains(@placeholder,'Any date')]")
+calendar.click()
+
+#logic for finding month -----------------------------
+while True:
+
+    wait.until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "c-fuzzy-calendar-month__title"))
+    )
+    month = driver.find_elements(By.CLASS_NAME, "c-fuzzy-calendar-month__title")
+
+    current_month = month[0].text
+    current_month_used = current_month.split()[0]
+
+    months = [
+        "January",    # 1
+        "February",   # 2
+        "March",      # 3
+        "April",      # 4
+        "May",        # 5
+        "June",       # 6
+        "July",       # 7
+        "August",     # 8
+        "September",  # 9
+        "October",    # 10
+        "November",   # 11
+        "December"    # 12
+    ]
+
+    current_month_used_value = months.index(current_month_used.capitalize()) # i need to constantly update the current month
+    Departure_month_value = months.index(Departure_month.capitalize())
+    Destination_month_value = months.index(Destination_month.capitalize())
+
+    if current_month_used_value == Departure_month_value:
+
+        wait.until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "day"))
+        )
+        date = driver.find_element(By.XPATH, f"//*[@data-date='2026-0{Departure_month_value+1}-{Departure_date}']")
+        date.click()
+        while True:
+            # i need to constantly updates the current to continue checking
+            wait.until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, "c-fuzzy-calendar-month__title"))
+            )
+            month = driver.find_elements(By.CLASS_NAME, "c-fuzzy-calendar-month__title")
+            current_month_2 = month[0].text
+            current_month_used_2 = current_month_2.split()[0]
+            current_month_used_value_2 = months.index(current_month_used_2.capitalize())
+            if current_month_used_value_2 == Destination_month_value:
+                # i need to change the active section for dates
+                wait.until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "nh_d-arrive"))
+                )
+                return_section = driver.find_element(By.CLASS_NAME, "nh_d-arrive")
+                return_section.click()
+                wait.until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, "day"))
+                )
+                date = driver.find_element(By.XPATH, f"//*[@data-date='2026-0{Destination_month_value+1}-{Destination_date}']")
+                date.click()
+                break
+            elif current_month_used_value + 1 <= Destination_month_value:
+                wait.until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "c-fuzzy-calendar-icon-next"))
+                )
+                next_icon = driver.find_element(By.CLASS_NAME, "c-fuzzy-calendar-icon-next")
+                next_icon.click()
+            else:
+                break
+        break
+            
+    elif current_month_used_value + 1 <= Departure_month_value:
+        wait.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "c-fuzzy-calendar-icon-next"))
+        )
+        next_icon = driver.find_element(By.CLASS_NAME, "c-fuzzy-calendar-icon-next")
+        next_icon.click()
+    else:
+        break
 
 #searching for the "Leaving From" box
 wait.until(
@@ -72,66 +160,16 @@ wait.until(
 result = driver.find_element(By.CLASS_NAME, "poi-result__title")
 result.click()
 
-#clicking the calendar
+#search button
 wait.until(
-    EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder,'Any date')]"))
+    EC.presence_of_element_located((By.CLASS_NAME, "nh_sp-btn2"))
 )
-calendar = driver.find_element(By.XPATH, "//input[contains(@placeholder,'Any date')]")
-calendar.click()
-
-#logic for finding target month -----------------------------
-while True:
-
-    wait.until(
-        EC.presence_of_all_elements_located((By.CLASS_NAME, "c-fuzzy-calendar-month__title"))
-    )
-    month = driver.find_elements(By.CLASS_NAME, "c-fuzzy-calendar-month__title")
-
-    current_month = month[0].text
-    current_month_used = current_month.split()[0]
-
-    months = [
-        "January",    # 1
-        "February",   # 2
-        "March",      # 3
-        "April",      # 4
-        "May",        # 5
-        "June",       # 6
-        "July",       # 7
-        "August",     # 8
-        "September",  # 9
-        "October",    # 10
-        "November",   # 11
-        "December"    # 12
-    ]
-
-    current_month_used_value = months.index(current_month_used.capitalize())
-    Target_month_value = months.index(Target_month.capitalize())
-
-    if current_month_used_value == Target_month_value:
-        break
-    elif current_month_used_value + 1 <= Target_month_value:
-        wait.until(
-            EC.presence_of_element_located((By.CLASS_NAME, "c-fuzzy-calendar-icon-next"))
-        )
-        next_icon = driver.find_element(By.CLASS_NAME, "c-fuzzy-calendar-icon-next")
-        next_icon.click()
-
-
-
-
-
-
-
-
-
-
-
-
+search_btn = driver.find_element(By.CLASS_NAME, "nh_sp-btn2")
+search_btn.click()
 
 time.sleep(10)
 driver.quit()
-
+#DONE DONE DONE
 
 
 
